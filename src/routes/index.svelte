@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import Editor from '../components/Editor.svelte';
 
-	let editor: { getInstance(): monaco.editor.IStandaloneCodeEditor };
+	let editor: { getInstance(): Promise<monaco.editor.IStandaloneCodeEditor> };
 
 	const codeStorage = (() => {
 		const KEY = 'code';
@@ -26,23 +26,30 @@
 		};
 	})();
 
-	onMount(() => {
-		editor.getInstance().onDidChangeModelContent(() => {
-			codeStorage.set(editor.getInstance().getValue());
+	onMount(async () => {
+		const instance = await editor.getInstance();
+		instance.focus();
+		instance.onDidChangeModelContent(() => {
+			codeStorage.set(instance.getValue());
 		});
 	});
 
-	function handlePaste(event: ClipboardEvent) {
-		console.log('text\n', event.clipboardData.getData('text/plain'));
-		console.log('html\n', event.clipboardData.getData('text/html'));
-	}
-
 	async function handleCopy() {
-		const instance = editor.getInstance();
+		const instance = await editor.getInstance();
+		const selection = instance.getSelection();
+
 		const viewState = instance.saveViewState();
-		const range = instance.getModel().getFullModelRange();
 		instance.focus();
-		instance.setSelection(range);
+
+		// if nothing is selected, select everything
+		if (
+			selection.selectionStartLineNumber === selection.positionLineNumber &&
+			selection.selectionStartColumn === selection.positionColumn
+		) {
+			const range = instance.getModel().getFullModelRange();
+			instance.setSelection(range);
+		}
+
 		document.execCommand('copy'); // 🔥
 		instance.restoreViewState(viewState);
 
@@ -64,8 +71,8 @@
 
 		html = modifyHtml(html);
 
-		console.log(text);
-		console.log(html);
+		console.log('text\n', text);
+		console.log('html\n', html);
 
 		await navigator.clipboard.write([
 			new ClipboardItem({
@@ -76,11 +83,26 @@
 	}
 
 	function modifyHtml(html) {
-		html = html
-			// remove redundant `<meta charset="utf-8">` tag (on chrome)
-			.replace(/^<meta.*?>/, '')
-			// fix leading space collapsing in google docs
-			.replaceAll(/ /g, '&nbsp;');
+		const root = document.createElement('div');
+		root.innerHTML = html;
+
+		// 1. remove redundant meta element
+		root.querySelector('meta').remove();
+
+		// 2. set expected font styles that should have come from monaco
+		const container = root.firstElementChild as HTMLElement;
+		container.style.setProperty('line-height', '1.15');
+		container.style.setProperty('font-size', '13.33333333px'); // 10pt (10 / 72 * 96)
+
+		// 3. replace spaces with 'no-break space', so docs doesn't collapse
+		//    leading white-space
+		const nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_TEXT);
+		let currentNode: Node;
+		while ((currentNode = nodeIterator.nextNode())) {
+			currentNode.nodeValue = currentNode.nodeValue.replaceAll(/ /g, '\u00A0');
+		}
+
+		html = root.innerHTML;
 
 		// html = `<table style="background-color: rgb(243, 243, 243); padding: 16px; width: 100%;"><tr><td>${html}</td></tr></table>`;
 
@@ -89,16 +111,7 @@
 </script>
 
 <div class="container">
-	<Editor bind:this={editor} initialValue={codeStorage.get() ?? ''} language="javascript" />
-	<aside>
-		<button on:click={handleCopy}>copy</button>
-		<textarea
-			on:paste={handlePaste}
-			class="paste"
-			placeholder="paste here and look at console"
-			rows="10"
-		/>
-	</aside>
+	<Editor bind:this={editor} initialValue={codeStorage.get() ?? ''} on:copy={handleCopy} />
 </div>
 
 <style>
@@ -116,17 +129,5 @@
 		grid-template-columns: 1fr max-content;
 		height: 100vh;
 		padding: 1rem;
-	}
-
-	aside {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.paste {
-		display: block;
-		resize: none;
-		width: 100%;
 	}
 </style>
