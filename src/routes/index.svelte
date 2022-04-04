@@ -1,9 +1,15 @@
 <script lang="ts">
 	import type * as monaco from 'monaco-editor';
 	import { onMount } from 'svelte';
+
+	import Button from '../components/Button.svelte';
+	import CopyToast from '../components/CopyToast.svelte';
+	import Debug from '../components/Debug.svelte';
 	import Editor from '../components/Editor.svelte';
+	import Information from '../components/Information.svelte';
 
 	let editor: { getInstance(): Promise<monaco.editor.IStandaloneCodeEditor> };
+	let copyToast: { show(): void };
 
 	const codeStorage = (() => {
 		const KEY = 'code';
@@ -80,6 +86,8 @@
 				'text/html': new Blob([html], { type: 'text/html' })
 			})
 		]);
+
+		copyToast.show();
 	}
 
 	function modifyHtml(html) {
@@ -111,7 +119,16 @@
 </script>
 
 <div class="container">
-	<Editor bind:this={editor} initialValue={codeStorage.get() ?? ''} on:copy={handleCopy} />
+	<header>
+		<h1><span style="color: #001080">pretty</span>.<span style="color: #6d5522">codes</span></h1>
+		<Information />
+		<Button on:click={handleCopy}>copy</Button>
+		<Debug />
+	</header>
+	<div class="editor">
+		<Editor bind:this={editor} initialValue={codeStorage.get() ?? ''} on:copy={handleCopy} />
+		<CopyToast bind:this={copyToast} />
+	</div>
 </div>
 
 <style>
@@ -119,15 +136,40 @@
 		box-sizing: border-box;
 	}
 
-	:global(body) {
+	:global(html) {
+		--border-color: rgba(0, 0, 0, 0.12);
+		--text-color: black;
+		--font-mono: 'Roboto Mono';
+	}
+
+	:global(html, body) {
+		height: 100%;
 		margin: 0;
 	}
 
 	.container {
 		display: grid;
 		gap: 1rem;
-		grid-template-columns: 1fr max-content;
-		height: 100vh;
+		grid-template: auto 1fr / 1fr;
+		height: 100%;
 		padding: 1rem;
+	}
+
+	.editor {
+		height: 100%;
+		position: relative;
+	}
+
+	header {
+		align-items: center;
+		display: flex;
+		gap: 0.75rem;
+	}
+
+	h1 {
+		margin: 0;
+		flex: 1;
+		font: normal 1.125rem/1 'Roboto Mono';
+		white-space: nowrap;
 	}
 </style>

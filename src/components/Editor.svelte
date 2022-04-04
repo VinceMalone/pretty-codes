@@ -6,6 +6,7 @@
 	import { createEditor, type Grammars } from './editor';
 
 	// import specific monaco features we want
+	// TODO: audit other wanted features (node_modules/monaco-editor/esm/metadata.js)
 	import 'monaco-editor/esm/vs/editor/contrib/contextmenu/browser/contextmenu';
 	import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess';
 
@@ -57,6 +58,7 @@
 			wordWrap: 'off', // wordWrapColumn
 			lineNumbers: 'on', // off
 			rulers: [80],
+			tabSize: 2,
 			fontFamily: 'Roboto Mono',
 			fontSize: 14
 		});
