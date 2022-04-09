@@ -4,7 +4,7 @@ import oniguruma from 'vscode-oniguruma/release/onig.wasm?url';
 
 import VsCodeLightTheme from '../../vs-light-plus-theme';
 
-import { rehydrateRegexps } from './configuration';
+import { parse } from './configuration';
 import type { ScopeName, TextMateGrammar, ScopeNameInfo } from './providers';
 import { SimpleLanguageInfoProvider } from './providers';
 import type { LanguageId } from './register';
@@ -26,10 +26,11 @@ export async function createEditor(
 	grammars: Grammars,
 	options?: monaco.editor.IStandaloneEditorConstructionOptions
 ) {
+	const languageMap = new Map(languages.map((language) => [language.id, language]));
+
 	async function fetchGrammar(scopeName: ScopeName): Promise<TextMateGrammar> {
 		const { path } = grammars[scopeName];
-		const uri = `grammars/${path}`;
-		const response = await fetch(uri);
+		const response = await fetch(path);
 		const grammar = await response.text();
 		const type = path.endsWith('.json') ? 'json' : 'plist';
 		return { type, grammar };
@@ -38,10 +39,10 @@ export async function createEditor(
 	async function fetchConfiguration(
 		language: LanguageId
 	): Promise<monaco.languages.LanguageConfiguration> {
-		const uri = `configurations/${language}.json`;
-		const response = await fetch(uri);
+		const extensionPoint = languageMap.get(language);
+		const response = await fetch(extensionPoint.configuration.path);
 		const rawConfiguration = await response.text();
-		return rehydrateRegexps(rawConfiguration);
+		return parse(rawConfiguration);
 	}
 
 	loadWASM(await loadVSCodeOnigurumWASM());

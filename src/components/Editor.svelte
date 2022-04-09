@@ -10,9 +10,21 @@
 	import 'monaco-editor/esm/vs/editor/contrib/contextmenu/browser/contextmenu';
 	import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess';
 
+	type Grammar = Grammars[0] & { scopeName: string };
+
+	interface LanguagePackage {
+		grammars: Grammar[];
+		language: monaco.languages.ILanguageExtensionPoint & { configuration: string };
+		id: string;
+	}
+
 	const dispatch = createEventDispatcher();
 
 	let editor: monaco.editor.IStandaloneCodeEditor;
+
+	$: if (editor) {
+		monaco.editor.setModelLanguage(editor.getModel(), language);
+	}
 
 	let setEditor: (_: typeof editor) => void;
 	const editorPromise = new Promise<typeof editor>((resolve) => (setEditor = resolve));
@@ -21,6 +33,8 @@
 	}
 
 	export let initialValue: string;
+	export let language: string;
+	export let languages: LanguagePackage[];
 
 	let editorEl: HTMLDivElement;
 
@@ -32,24 +46,23 @@
 			}
 		};
 
-		const languages: monaco.languages.ILanguageExtensionPoint[] = [
-			{
-				id: 'javascript',
-				extensions: ['.js', '.jsx', '.mjs', '.cjs'],
-				aliases: ['JavaScript', 'javascript', 'javascriptreact', 'js']
-			}
-		];
+		const extensionPoints: monaco.languages.ILanguageExtensionPoint[] = [];
+		const grammars: Grammars = {};
 
-		const grammars: Grammars = {
-			'source.js.jsx': {
-				language: 'javascript',
-				path: 'JavaScriptReact.tmLanguage.json'
-			}
-		};
+		for (const l of languages) {
+			extensionPoints.push({
+				...l.language,
+				configuration: monaco.Uri.parse(l.language.configuration)
+			});
 
-		editor = await createEditor(editorEl, languages, grammars, {
+			for (const grammar of l.grammars) {
+				grammars[grammar.scopeName] = grammar;
+			}
+		}
+
+		editor = await createEditor(editorEl, extensionPoints, grammars, {
 			value: initialValue,
-			language: 'javascript',
+			language,
 			minimap: { enabled: false },
 			formatOnPaste: true,
 			renderWhitespace: 'all',

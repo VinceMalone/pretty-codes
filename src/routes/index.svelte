@@ -7,30 +7,18 @@
 	import Debug from '../components/Debug.svelte';
 	import Editor from '../components/Editor.svelte';
 	import Information from '../components/Information.svelte';
+	import Select from '../components/Select.svelte';
+	import { languages } from '../languages';
+	import { Storage } from '../Storage';
+
+	const codeStorage = new Storage('code');
+	const languageStorage = new Storage('language');
 
 	let editor: { getInstance(): Promise<monaco.editor.IStandaloneCodeEditor> };
 	let copyToast: { show(): void };
+	let language = languageStorage.get() ?? 'typescriptreact';
 
-	const codeStorage = (() => {
-		const KEY = 'code';
-
-		return {
-			get() {
-				try {
-					return JSON.parse(localStorage.getItem(KEY));
-				} catch (error) {
-					console.error(`couldn't parse code from storage`, error);
-				}
-			},
-			set(value) {
-				try {
-					localStorage.setItem(KEY, JSON.stringify(value));
-				} catch (error) {
-					console.error(`couldn't save code to storage`, error);
-				}
-			}
-		};
-	})();
+	$: languageStorage.set(language);
 
 	onMount(async () => {
 		const instance = await editor.getInstance();
@@ -123,10 +111,23 @@
 		<h1><span style="color: #001080">pretty</span>.<span style="color: #6d5522">codes</span></h1>
 		<Information />
 		<Button on:click={handleCopy}>copy</Button>
+		<label for="language">
+			language: <Select id="language" bind:value={language}>
+				{#each languages as language}
+					<option>{language.id}</option>
+				{/each}
+			</Select>
+		</label>
 		<Debug />
 	</header>
 	<div class="editor">
-		<Editor bind:this={editor} initialValue={codeStorage.get() ?? ''} on:copy={handleCopy} />
+		<Editor
+			bind:this={editor}
+			on:copy={handleCopy}
+			initialValue={codeStorage.get() ?? ''}
+			{language}
+			{languages}
+		/>
 		<CopyToast bind:this={copyToast} />
 	</div>
 </div>
@@ -171,5 +172,10 @@
 		flex: 1;
 		font: normal 1.125rem/1 'Roboto Mono';
 		white-space: nowrap;
+	}
+
+	label {
+		color: black;
+		font: normal 1rem/1 var(--font-mono);
 	}
 </style>

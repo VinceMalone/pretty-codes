@@ -1,0 +1,26 @@
+{
+	"name": "java",
+	"contributes": {
+		"languages": [
+			{
+				"id": "java",
+				"extensions": [
+					".java",
+					".jav"
+				],
+				"aliases": [
+					"Java",
+					"java"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "java",
+				"scopeName": "source.java",
+				"path": "./syntaxes/java.tmLanguage.json"
+			}
+		]
+	}
+}

@@ -44,6 +44,30 @@ const REGEXP_PROPERTIES = [
 	'onEnterRules.10.afterText'
 ];
 
+export function parse(rawConfiguration: string): monaco.languages.LanguageConfiguration {
+	const out = JSON.parse(rawConfiguration);
+	rehydrateRegexps(out);
+	fixAutoClosingPairs(out, 'autoClosingPairs');
+	fixAutoClosingPairs(out, 'surroundingPairs');
+	return out;
+}
+
+function fixAutoClosingPairs(
+	configuration: monaco.languages.LanguageConfiguration,
+	property: string
+) {
+	if (Array.isArray(configuration[property])) {
+		for (let i = 0; i < configuration[property].length; i++) {
+			const propertySelector = `${property}.${i}`;
+			const value = getProp(configuration, propertySelector);
+			if (Array.isArray(value)) {
+				const [open, close] = value;
+				setProp(configuration, propertySelector, { open, close });
+			}
+		}
+	}
+}
+
 /**
  * Configuration data is read from JSON and JSONC files, which cannot contain
  * regular expression literals. Although Monarch grammars will often accept
@@ -54,25 +78,23 @@ const REGEXP_PROPERTIES = [
  * accept a RegExp or a string literal. Possibly a small struct if flags need
  * to be specified to the RegExp constructor.
  */
-export function rehydrateRegexps(rawConfiguration: string): monaco.languages.LanguageConfiguration {
-	const out = JSON.parse(rawConfiguration);
+function rehydrateRegexps(configuration: monaco.languages.LanguageConfiguration) {
 	for (const property of REGEXP_PROPERTIES) {
-		const value = getProp(out, property);
+		const value = getProp(configuration, property);
 		if (typeof value === 'string') {
-			setProp(out, property, new RegExp(value));
+			setProp(configuration, property, new RegExp(value));
 		} else if (typeof value?.pattern === 'string') {
-			setProp(out, property, new RegExp(value.pattern, value.flags));
+			setProp(configuration, property, new RegExp(value.pattern, value.flags));
 		}
 	}
-	return out;
 }
 
-function getProp(obj: { string: any }, selector: string): any {
+function getProp(obj: any, selector: string): any {
 	const components = selector.split('.');
 	return components.reduce((acc, cur) => (acc != null ? acc[cur] : null), obj);
 }
 
-function setProp(obj: { string: any }, selector: string, value: RegExp): void {
+function setProp(obj: any, selector: string, value: any): void {
 	const components = selector.split('.');
 	const indexToSet = components.length - 1;
 	components.reduce((acc, cur, index) => {

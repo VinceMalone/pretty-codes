@@ -135,49 +135,6 @@
 			"action": {
 				"indent": "indent"
 			}
-		},
-
-		{
-			"beforeText": {
-				"pattern": "<(?!(?:area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$",
-				"flags": "i"
-			},
-			"afterText": {
-				"pattern": "^<\\/([_:\\w][_:\\w-.\\d]*)\\s*>$",
-				"flags": "i"
-			},
-			"action": {
-				"indent": "indentOutdent"
-			}
-		},
-		{
-			"beforeText": {
-				"pattern": "<(?!(?:area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$",
-				"flags": "i"
-			},
-			"action": {
-				"indent": "indent"
-			}
-		},
-		{
-			"beforeText": {
-				"pattern": "^>$"
-			},
-			"afterText": {
-				"pattern": "^<\\/([_:\\w][_:\\w-.\\d]*)\\s*>$",
-				"flags": "i"
-			},
-			"action": {
-				"indent": "indentOutdent"
-			}
-		},
-		{
-			"beforeText": {
-				"pattern": "^>$"
-			},
-			"action": {
-				"indent": "indent"
-			}
 		}
 	]
 }

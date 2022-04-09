@@ -20,7 +20,6 @@
 		This tool can be used to copy code snippets as rich text (HTML) to be pasted into Google Docs or
 		Google Slides without needing to spend more time formatting the text after pasting.
 	</p>
-	<p>⚠️ <em>Currently only support JavaScript.</em></p>
 	<h2>Features</h2>
 	<ul>
 		<li>

@@ -1,0 +1,25 @@
+{
+	"name": "rust",
+	"contributes": {
+		"languages": [
+			{
+				"id": "rust",
+				"extensions": [
+					".rs"
+				],
+				"aliases": [
+					"Rust",
+					"rust"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "rust",
+				"path": "./syntaxes/rust.tmLanguage.json",
+				"scopeName": "source.rust"
+			}
+		]
+	}
+}
