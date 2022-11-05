@@ -1,5 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import Button from './Button.svelte';
+
+	export let initialOpen = false;
+
+	onMount(() => {
+		if (initialOpen) {
+			dialog.showModal();
+		}
+	});
 
 	let dialog: HTMLDialogElement;
 

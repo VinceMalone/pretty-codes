@@ -109,7 +109,7 @@
 <div class="container">
 	<header>
 		<h1><span style="color: #001080">pretty</span>.<span style="color: #6d5522">codes</span></h1>
-		<Information />
+		<Information initialOpen={location.hash === '#info'} />
 		<Button on:click={handleCopy}>copy</Button>
 		<label for="language">
 			language: <Select id="language" bind:value={language}>
