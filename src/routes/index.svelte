@@ -83,7 +83,7 @@
 		root.innerHTML = html;
 
 		// 1. remove redundant meta element
-		root.querySelector('meta').remove();
+		root.querySelector('meta')?.remove();
 
 		// 2. set expected font styles that should have come from monaco
 		const container = root.firstElementChild as HTMLElement;
