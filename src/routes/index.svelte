@@ -150,14 +150,13 @@
 
 	.container {
 		display: grid;
-		gap: 1rem;
-		grid-template: auto 1fr / 1fr;
+		grid-template: auto 1fr / 100%;
 		height: 100%;
-		padding: 1rem;
 	}
 
 	.editor {
 		height: 100%;
+		overflow: hidden;
 		position: relative;
 	}
 
@@ -165,6 +164,7 @@
 		align-items: center;
 		display: flex;
 		gap: 0.75rem;
+		padding: 1rem;
 	}
 
 	h1 {

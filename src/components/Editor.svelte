@@ -63,6 +63,7 @@
 		editor = await createEditor(editorEl, extensionPoints, grammars, {
 			value: initialValue,
 			language,
+			automaticLayout: true,
 			minimap: { enabled: false },
 			formatOnPaste: true,
 			renderWhitespace: 'all',
