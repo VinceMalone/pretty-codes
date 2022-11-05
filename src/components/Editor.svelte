@@ -86,12 +86,6 @@
 			run: () => dispatch('copy')
 		});
 
-		const paste = editor.onDidPaste(() => {
-			// hack! need to wait until after the tokenizer has done its job and the
-			// styles applied before copying
-			setTimeout(() => dispatch('copy'), 100);
-		});
-
 		await document.fonts.ready;
 		monaco.editor.remeasureFonts();
 
@@ -100,7 +94,6 @@
 		return () => {
 			editor.dispose();
 			copy.dispose();
-			paste.dispose();
 		};
 	});
 </script>
