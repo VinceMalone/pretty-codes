@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Pretty Codes</title>
-		<link rel="icon" href="%svelte.assets%/favicon.png" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,9 +26,9 @@
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:site" content="@vincetmalone" />
 		<meta name="twitter:creator" content="@vincetmalone" />
-		%svelte.head%
+		%sveltekit.head%
 	</head>
-	<body>
-		%svelte.body%
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

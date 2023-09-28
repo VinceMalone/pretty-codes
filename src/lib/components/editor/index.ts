@@ -3,7 +3,6 @@ import { createOnigScanner, createOnigString, loadWASM } from 'vscode-oniguruma'
 import oniguruma from 'vscode-oniguruma/release/onig.wasm?url';
 
 import VsCodeLightTheme from '../../vs-light-plus-theme';
-
 import { parse } from './configuration';
 import type { ScopeName, TextMateGrammar, ScopeNameInfo } from './providers';
 import { SimpleLanguageInfoProvider } from './providers';

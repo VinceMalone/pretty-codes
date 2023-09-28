@@ -2,14 +2,14 @@
 	import type * as monaco from 'monaco-editor';
 	import { onMount } from 'svelte';
 
-	import Button from '../components/Button.svelte';
-	import CopyToast from '../components/CopyToast.svelte';
-	import Debug from '../components/Debug.svelte';
-	import Editor from '../components/Editor.svelte';
-	import Information from '../components/Information.svelte';
-	import Select from '../components/Select.svelte';
-	import { languages } from '../languages';
-	import { Storage } from '../Storage';
+	import Button from '../lib/components/Button.svelte';
+	import CopyToast from '../lib/components/CopyToast.svelte';
+	import Debug from '../lib/components/Debug.svelte';
+	import Editor from '../lib/components/Editor.svelte';
+	import Information from '../lib/components/Information.svelte';
+	import Select from '../lib/components/Select.svelte';
+	import { languages } from '../lib/languages';
+	import { Storage } from '../lib/Storage';
 
 	const codeStorage = new Storage('code');
 	const languageStorage = new Storage('language');
