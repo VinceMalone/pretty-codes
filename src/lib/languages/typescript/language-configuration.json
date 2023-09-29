@@ -52,6 +52,12 @@
 		["`", "`"],
 		["<", ">"]
 	],
+	"colorizedBracketPairs": [
+		["(", ")"],
+		["[", "]"],
+		["{", "}"],
+		["<", ">"]
+	],
 	"autoCloseBefore": ";:.,=}])>` \n\t",
 	"folding": {
 		"markers": {
@@ -60,7 +66,7 @@
 		}
 	},
 	"wordPattern": {
-		"pattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>/\\?\\s]+)"
+		"pattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\@\\~\\!\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>/\\?\\s]+)"
 	},
 	"indentationRules": {
 		"decreaseIndentPattern": {
@@ -134,6 +140,13 @@
 			},
 			"action": {
 				"indent": "indent"
+			}
+		},
+		{
+			"previousLineText": "^\\s*(((else ?)?if|for|while)\\s*\\(.*\\)\\s*|else\\s*)$",
+			"beforeText": "^\\s+([^{i\\s]|i(?!f\\b))",
+			"action": {
+				"indent": "outdent"
 			}
 		}
 	]

@@ -6,8 +6,8 @@ import javascriptPackage from './javascript/package.json';
 import markdownPackage from './markdown/package.json';
 import pythonPackage from './python/package.json';
 import rustPackage from './rust/package.json';
-import swiftPackage from './swift/package.json';
 import sqlPackage from './sql/package.json';
+import swiftPackage from './swift/package.json';
 import typescriptPackage from './typescript/package.json';
 
 export const languages = [
@@ -19,8 +19,8 @@ export const languages = [
 	markdownPackage,
 	pythonPackage,
 	rustPackage,
-	swiftPackage,
 	sqlPackage,
+	swiftPackage,
 	typescriptPackage
 ]
 	.flatMap(({ contributes, name }) =>
