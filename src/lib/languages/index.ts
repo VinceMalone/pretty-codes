@@ -7,6 +7,7 @@ import markdownPackage from './markdown/package.json';
 import pythonPackage from './python/package.json';
 import rustPackage from './rust/package.json';
 import sqlPackage from './sql/package.json';
+import sveltePackage from './svelte/package.json';
 import swiftPackage from './swift/package.json';
 import typescriptPackage from './typescript/package.json';
 
@@ -20,6 +21,7 @@ export const languages = [
 	pythonPackage,
 	rustPackage,
 	sqlPackage,
+	sveltePackage,
 	swiftPackage,
 	typescriptPackage
 ]
